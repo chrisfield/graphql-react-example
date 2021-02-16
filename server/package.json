@@ -1,0 +1,34 @@
+{
+  "name": "lireditserver",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "mikro-orm": {
+    "useTsNode": true,
+    "configPaths": [
+      "./src/mikro-orm.config.ts",
+      "./dist/mikro-orm.config.js"
+    ]
+  },
+  "scripts": {
+    "typescript": "tsc",
+    "watch": "tsc -w",
+    "dev": "nodemon dist/index.js",
+    "start": "node dist/index.js",
+    "start-ts": "ts-node src/index.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.28",
+    "nodemon": "^2.0.7",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.5"
+  },
+  "dependencies": {
+    "@mikro-orm/cli": "^4.4.3",
+    "@mikro-orm/core": "^4.4.3",
+    "@mikro-orm/migrations": "^4.4.3",
+    "@mikro-orm/postgresql": "^4.4.3",
+    "dotenv-defaults": "^2.0.1",
+    "pg": "^8.5.1"
+  }
+}
