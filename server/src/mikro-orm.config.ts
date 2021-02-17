@@ -1,7 +1,7 @@
 import 'dotenv-defaults/config';
 import { MikroORM } from "@mikro-orm/core/MikroORM";
 import path from "path";
-import { Post } from "./entities/Posts";
+import { Post } from "./entities/post";
 
 type envValues = {
   NODE_ENV: string;

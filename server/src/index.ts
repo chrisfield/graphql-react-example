@@ -1,17 +1,40 @@
 import 'dotenv-defaults/config';
+import 'reflect-metadata';
 import { MikroORM } from '@mikro-orm/core';
-import { Post } from './entities/Posts';
-import config from './mikro-orm.config';
+import express from 'express';
+import { ApolloServer } from 'apollo-server-express';
+import { buildSchema } from 'type-graphql';
+
+import mikroOrmConfig from './mikro-orm.config';
+
+import { Hello as HelloResolver, Post as PostResolver } from './resolvers';
+
+const { port } = process.env;
 
 const main = async () => {
-  const orm = await MikroORM.init(config);
+  const orm = await MikroORM.init(mikroOrmConfig);
   await orm.getMigrator().up();
 
-  // const post = orm.em.create(Post, {title: 'My first post'});
-  // await orm.em.persistAndFlush(post);
+  const app = express();
 
-  const posts = await orm.em.find(Post, {});
-  console.log(posts);
+  const apolloServer = new ApolloServer({
+    schema: await buildSchema({
+      resolvers: [HelloResolver, PostResolver],
+      validate: false,
+    }),
+    context: () => ({ em: orm.em }),
+  });
+
+  apolloServer.applyMiddleware({ app });
+
+  app.get('/', (_, res) => {
+    res.send('hello');
+  });
+
+  app.listen(port, () => {
+    console.log(`Server started on port ${port}`);
+  });
+
 };
 
 main();
