@@ -7,7 +7,7 @@ import { buildSchema } from 'type-graphql';
 
 import mikroOrmConfig from './mikro-orm.config';
 
-import { Hello as HelloResolver, Post as PostResolver } from './resolvers';
+import { Hello, User, Post } from './resolvers';
 
 const { port } = process.env;
 
@@ -19,7 +19,7 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver, PostResolver],
+      resolvers: [Hello, User, Post],
       validate: false,
     }),
     context: () => ({ em: orm.em }),
@@ -32,7 +32,7 @@ const main = async () => {
   });
 
   app.listen(port, () => {
-    console.log(`Server started on port ${port}`);
+    console.log(`Server listening on port ${port}`);
   });
 
 };

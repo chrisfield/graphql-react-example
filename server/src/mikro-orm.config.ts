@@ -1,7 +1,7 @@
 import 'dotenv-defaults/config';
-import { MikroORM } from "@mikro-orm/core/MikroORM";
-import path from "path";
-import { Post } from "./entities/post";
+import { MikroORM } from '@mikro-orm/core/MikroORM';
+import path from 'path';
+import { User, Post } from './entities';
 
 type envValues = {
   NODE_ENV: string;
@@ -19,7 +19,7 @@ export default {
     path: path.join(__dirname, './migrations'), // path to the folder with migrations
     pattern: /^[\w-]+\d+\.[tj]s$/, // regex pattern for the migration files
   },
-  entities: [Post],
+  entities: [User, Post],
   dbName,
   user,
   password,
