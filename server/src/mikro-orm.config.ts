@@ -2,16 +2,11 @@ import 'dotenv-defaults/config';
 import { MikroORM } from '@mikro-orm/core/MikroORM';
 import path from 'path';
 import { User, Post } from './entities';
+import { Env } from './types';
 
-type envValues = {
-  NODE_ENV: string;
-  dbName: string;
-  dbUser: string;
-  dbPassword: string;
-  dbType: string;
-};
+type EnvValues = Pick<Env, 'dbName' | 'dbUser' | 'dbPassword' | 'dbType' | 'NODE_ENV'>;
 
-const { dbName, dbUser: user, dbPassword: password, dbType, NODE_ENV } = process.env as envValues;
+const { dbName, dbUser: user, dbPassword: password, dbType, NODE_ENV } = process.env as EnvValues;
 export const isProd = NODE_ENV === 'production';
 
 export default {
