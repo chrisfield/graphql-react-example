@@ -14,55 +14,55 @@ import { Env, MyContext } from './types';
 
 type EnvValues = Pick<Env, 'port' | 'sessionSecret' | 'NODE_ENV'>;
 
-const { port, sessionSecret,  NODE_ENV } = process.env as EnvValues;
+const { port, sessionSecret, NODE_ENV } = process.env as EnvValues;
 
 const main = async () => {
-  const orm = await MikroORM.init(mikroOrmConfig);
-  await orm.getMigrator().up();
+    const orm = await MikroORM.init(mikroOrmConfig);
+    await orm.getMigrator().up();
 
-  const app = express();
+    const app = express();
 
-  const RedisStore = connectRedis(session);
-  const redisClient = redis.createClient()
+    const RedisStore = connectRedis(session);
+    const redisClient = redis.createClient();
 
-  app.use(
-    session({
-      name: 'qid',
-      store: new RedisStore({
-        client: redisClient,
-        disableTTL: true,
-        disableTouch: true,
-      }),
-      cookie: {
-        maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 years
-        httpOnly: true,
-        secure: NODE_ENV === 'production',
-        sameSite: 'lax',
-      },
-      saveUninitialized: false,
-      secret: sessionSecret,
-      resave: false,
-    })
-  );
+    app.use(
+        session({
+            name: 'qid',
+            store: new RedisStore({
+                client: redisClient,
+                disableTTL: true,
+                disableTouch: true,
+            }),
+            cookie: {
+                maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 years
+                httpOnly: true,
+                secure: NODE_ENV === 'production',
+                sameSite: 'lax',
+            },
+            saveUninitialized: false,
+            secret: sessionSecret,
+            resave: false,
+        })
+    );
 
-  const apolloServer = new ApolloServer({
-    schema: await buildSchema({
-      resolvers: [Hello, User, Post],
-      validate: false,
-    }),
-    context: ({req, res}): MyContext => ({ em: orm.em, req, res }),
-  });
+    const apolloServer = new ApolloServer({
+        schema: await buildSchema({
+            resolvers: [Hello, User, Post],
+            validate: false,
+        }),
+        context: ({ req, res }): MyContext => ({ em: orm.em, req, res }),
+    });
 
-  apolloServer.applyMiddleware({ app });
+    apolloServer.applyMiddleware({ app });
 
-  app.get('/', (_, res) => {
-    res.send('hello');
-  });
+    app.get('/', (_, res) => {
+        res.send('hello');
+    });
 
-  app.listen(port, () => {
-    console.log(`Server listening on port ${port}`);
-  });
-
+    app.listen(port, () => {
+        // eslint-disable-next-line no-console
+        console.log(`Server listening on port ${port}`);
+    });
 };
 
 main();
